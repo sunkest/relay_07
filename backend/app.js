@@ -3,7 +3,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const createError = require('http-errors');
-
+// const sequelize = require('./util/database');
+// const User = require('./models/user');
+// const School = require('./models/school');
+// const Post = require('./models/post');
 const api = require('./controller');
 var app = express();
 
@@ -22,7 +25,19 @@ app.use('/api', api)
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-
+// User.belongsTo(School);
+// School.hasMany(User);
+// Post.belongsTo(User);
+// User.hasMany(Post);
+// sequelize
+//   // .sync({ force: true })
+//   .sync()
+//   .then((user) => {
+//     app.listen(3000);
+//   })
+//   .catch((err) => {
+//     return console.log(err);
+//   });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));

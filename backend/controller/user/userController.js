@@ -1,4 +1,4 @@
-import {asyncWrapper} from '../../lib/helper'
+const {asyncWrapper} = require('../../util/helper')
 const getTest = asyncWrapper(async (req, res) => {
     // dao.params.name = req.query.user_name;
     // dao.params.user_id = req.query.user_id;
