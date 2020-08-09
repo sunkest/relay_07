@@ -12,6 +12,7 @@ exports.getPosts = async (req, res, next) => {
     });
 
     res.render("post/posts", {
+      user: req.user,
       isLogin: req.user,
       posts,
     });
@@ -39,36 +40,14 @@ exports.postAddPost = async (req, res, next) => {
   }
 };
 
-exports.getPost = (req, res, next) => {
+exports.getPost = async (req, res, next) => {
   const { postId } = req.params;
-  let post;
+  try {
+    const post = await Post.findByPk(postId);
+    const creator = await User.findByPk(post.userId);
 
-  Post.findByPk(postId)
-    .then((p) => {
-      post = p;
-
-      return User.findByPk(post.userId);
-    })
-    .then((user) => {
-      const creator = user;
-      res.render("post/post", {
-        post,
-        creator,
-        isLogin: req.user,
-      });
-    })
-
-    .catch((err) => console.log(err));
+    res.render("post/post", { post, creator,isLogin: req.user });
+  } catch (err) {
+    console.log(err);
+  }
 };
-
-// exports.getPost = async (req, res, next) => {
-//   const { postId } = req.params;
-//   try {
-//     const post = await Post.findByPk(postId);
-//     const creator = await User.findByPk(post.userId);
-
-//     res.render("post/post", { post, creator,isLogin: req.user });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };

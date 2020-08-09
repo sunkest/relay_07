@@ -1,5 +1,10 @@
+const crypto = require("crypto");
+
+const bcrypt = require("bcryptjs");
+
 const School = require("../models/school");
 const User = require("../models/user");
+const { Console } = require("console");
 
 exports.getHome = (req, res, next) => {
   res.render("auth/home", {
@@ -22,12 +27,17 @@ exports.postLogin = async (req, res, next) => {
       res.redirect("/");
     }
 
-    if (+user.password !== +password) {
-      res.redirect("/");
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (isMatch) {
+      req.session.user = user;
+      return req.session.save((err) => {
+        console.log(err);
+        res.redirect("/posts");
+      });
     }
-    console.log('here')
-    req.user = user;
-    res.redirect("/posts");
+    cossole.log("fuckedup");
+    res.redirect("/");
   } catch (err) {
     console.log(err);
   }
@@ -50,10 +60,12 @@ exports.postSignup = async (req, res, next) => {
       await school.save();
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     await school.createUser({
       name,
       email,
-      password,
+      password: hashedPassword,
       score: 10,
     });
 
@@ -64,8 +76,8 @@ exports.postSignup = async (req, res, next) => {
 };
 
 exports.postLogout = (req, res, next) => {
-  
-  req.user = null;
-  
-  res.redirect("/");
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect("/");
+  });
 };

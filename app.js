@@ -2,11 +2,19 @@ const path = require("path");
 
 const express = require("express");
 const sequelize = require("./util/database");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 
 const app = express();
 
-// error 404 controller
-const errorController = require("./controllers/error");
+const store = new MySQLStore({
+  host: "52.79.240.124",
+  port: "3306",
+  user: "relay07",
+  password: "1q2w3e4r",
+  database: "relay07",
+  clearExpired: true,
+});
 
 // model
 const User = require("./models/user");
@@ -22,9 +30,23 @@ app.set("views", "views");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  session({
+    secret: "dplandplan",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
+
 // locals
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.pageTitle = "Relay 07 I Love School";
+  
+  if (!req.session.user) return next();
+
+  const user = await User.findByPk(req.session.user.id);
+  req.user = user;
   next();
 });
 
@@ -40,16 +62,12 @@ School.hasMany(User);
 Post.belongsTo(User);
 User.hasMany(Post);
 
-app.use(async (req, res, next) => {
-  const user = await User.findByPk(1);
-  req.user = user;
-  res.locals.user = user;
-  next();
-});
-
 // routing
 app.use(authRoutes);
 app.use(postRoutes);
+
+// error 404 controller
+const errorController = require("./controllers/error");
 
 // error 404 route
 app.use(errorController.get404);
