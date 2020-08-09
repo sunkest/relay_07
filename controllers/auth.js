@@ -36,7 +36,7 @@ exports.postLogin = async (req, res, next) => {
         res.redirect("/posts");
       });
     }
-    cossole.log("fuckedup");
+    
     res.redirect("/");
   } catch (err) {
     console.log(err);
