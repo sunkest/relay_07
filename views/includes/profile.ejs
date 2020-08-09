@@ -1,0 +1,23 @@
+<div class="col-2">
+  <div class="card">
+    <img
+      src="https://user-images.githubusercontent.com/42710591/89651430-e3997800-d8fe-11ea-8fc4-892c6fc429ab.JPG"
+      class="card-img-top"
+      alt="유저 사진"
+    />
+    <div class="card-body">
+      <h5 class="card-title"><%= user.name %></h5>
+      <p class="card-text">
+        OOO학교<br />
+        <%= user.score %> 점<br />
+      </p>
+      <button type="button" class="btn btn-primary">프로필 수정</button>
+
+      <br />
+
+      <a href="/add-post"
+        ><button type="button" class="btn btn-primary">게시물 작성</button></a
+      >
+    </div>
+  </div>
+</div>
