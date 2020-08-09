@@ -42,7 +42,7 @@ app.use(
 // locals
 app.use(async (req, res, next) => {
   res.locals.pageTitle = "Relay 07 I Love School";
-  
+
   if (!req.session.user) return next();
 
   const user = await User.findByPk(req.session.user.id);

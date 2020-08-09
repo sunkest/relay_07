@@ -23,6 +23,7 @@ exports.getPosts = async (req, res, next) => {
 
 exports.getAddPost = (req, res, next) => {
   res.render("post/add-post", {
+    user: req.user,
     isLogin: res.user,
   });
 };
@@ -46,7 +47,13 @@ exports.getPost = async (req, res, next) => {
     const post = await Post.findByPk(postId);
     const creator = await User.findByPk(post.userId);
 
-    res.render("post/post", { post, creator,isLogin: req.user });
+    console.log(req.user);
+    res.render("post/post", {
+      post,
+      creator,
+      user: req.user,
+      isLogin: req.user,
+    });
   } catch (err) {
     console.log(err);
   }
